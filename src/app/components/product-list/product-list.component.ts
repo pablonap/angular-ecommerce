@@ -10,10 +10,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProductListComponent implements OnInit {
 
-  products: Product[];
-  currentCategoryId: number;
-  currentCategoryName: string;
-  searchMode: boolean;
+  products: Product[] = [];
+  currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
+  currentCategoryName: string = '';
+  searchMode: boolean = false;
+
+  // new properties for pagination
+  thePageNumber: number = 1;
+  thePageSize: number = 10;
+  theTotalElements: number = 0;
 
   constructor(
     private productService: ProductService, 
@@ -61,13 +67,48 @@ export class ProductListComponent implements OnInit {
       this.currentCategoryName = 'Books';
     }
 
+    /*
+     * Regarding the categoryId, we have to check if we have a different categoryId than the previous.
+
+     * Angular will reuse a component if it's currently being viewed. So Angular may not always create 
+       a new component every time, so there is a state from the previous call. 
+
+     * About the page number or resetting the page number, if we have a different categoryId than the 
+       previous, then we want to reset the page number back to one. And that's the rational for adding 
+       this code. So if this.previousCategoryId is not equal to this.currentCategoryId, then 
+       this.PageNumber is equal to one. */
+
+    if (this.previousCategoryId != this.currentCategoryId) {
+      this.thePageNumber = 1;
+    }
+
+    this.previousCategoryId = this.currentCategoryId;
+
+    console.log(`currentCategoryId=${this.currentCategoryId}, thePageNumber=${this.thePageNumber}`);
+
+
+    this.productService.getProductListPaginate(
+      this.thePageNumber - 1,
+      this.thePageSize,
+      this.currentCategoryId)
+      .subscribe(this.processResult());
+
     // now get the products for the given category
-    this.productService.getProductList(this.currentCategoryId).subscribe(
-      data => {
-        this.products = data;
-      }
-    )
+    // this.productService.getProductList(this.currentCategoryId).subscribe(
+    //   data => {
+    //     this.products = data;
+    //   }
+    // )
      
+  }
+
+  processResult() {
+    return data => {
+      this.products = data._embedded.products;
+      this.thePageNumber = data.page.number + 1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
+    }
   }
 
 }
