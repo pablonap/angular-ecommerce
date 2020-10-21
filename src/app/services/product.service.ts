@@ -23,6 +23,17 @@ export class ProductService {
     return this.getProducts(searchUrl);
   }
 
+  getProductListPaginate(thePage: number, 
+                         thePageSize: number, 
+                         theCategoryId: number): Observable<GetResponseProducts> {
+    // I use GetResponseProducts because I need to access this data in the calling application.
+
+    const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`
+                    + `&page=${thePage}&size=${thePageSize}`;
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
+
   getProductCategories(): Observable<ProductCategory[]> {
     return this.httpClient.get<GetResponseProductCategory>(this.categoryUrl).pipe(
       map(response => response._embedded.productCategory)
