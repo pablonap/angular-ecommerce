@@ -40,13 +40,22 @@ export class ProductService {
     );
   }
 
-  searchProducts(theKeyword: string): Observable<Product[]>  {
-    // Build the URL based on the keyword.
-    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`;
+  // searchProducts(theKeyword: string): Observable<Product[]>  {
+  //   // Build the URL based on the keyword.
+  //   const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`;
 
-    return this.getProducts(searchUrl);
+  //   return this.getProducts(searchUrl);
+  // }
+
+  searchProductsPaginate(thePage: number, 
+                         thePageSize: number, 
+                         theKeyword: string): Observable<GetResponseProducts> {
+
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`
+                    + `&page=${thePage}&size=${thePageSize}`;
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
-
 
   private getProducts(searchUrl: string): Observable<Product[]> {
     return this.httpClient.get<GetResponseProducts>(searchUrl).pipe(
