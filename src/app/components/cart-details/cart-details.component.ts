@@ -35,4 +35,9 @@ export class CartDetailsComponent implements OnInit {
      
   }
 
+  incrementQuantity(theCartItem) {
+    // I am updating cartItems from cartService an in turn, in this html I'm iterating that array.
+    this.cartService.addToCart(theCartItem);
+  }
+
 }
