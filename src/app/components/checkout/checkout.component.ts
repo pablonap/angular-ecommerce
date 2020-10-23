@@ -18,7 +18,29 @@ export class CheckoutComponent implements OnInit {
         firstName: [''],
         lastName: [''],
         email: ['']
-      })
+      }),
+      shippingAddress: this.formBuilder.group({
+        street: [''],
+        city: [''],
+        state: [''],
+        country: [''],
+        zipCode: ['']
+      }),
+      buildingAddress: this.formBuilder.group({
+        street: [''],
+        city: [''],
+        state: [''],
+        country: [''],
+        zipCode: ['']
+      }),
+      creditCard: this.formBuilder.group({
+        cardType: [''],
+        nameOnCard: [''],
+        cardNumber: [''],
+        securityCode: [''],
+        expirationMonth: [''],
+        expirationYear: ['']
+      }),
     })
   }
 
@@ -26,6 +48,7 @@ export class CheckoutComponent implements OnInit {
     console.log('Handling the submit button');
     console.log(this.checkoutFormGroup.get('customer').value);
     console.log("Email: " + this.checkoutFormGroup.get('customer').value.email);
+    console.log(this.checkoutFormGroup.get('shippingAddress').value);
   }
 
 }
